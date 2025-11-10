@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProjectService {
 
@@ -17,7 +19,11 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project criateProject(Project project) {
+    public Project createProject(Project project) {
         return projectRepository.save(project);
+    }
+
+    public List<Project> findAllProjects() {
+        return projectRepository.findAll();
     }
 }
