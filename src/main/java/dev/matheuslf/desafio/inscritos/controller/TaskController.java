@@ -1,5 +1,6 @@
 package dev.matheuslf.desafio.inscritos.controller;
 
+import dev.matheuslf.desafio.inscritos.dto.StatusUpdateDTO;
 import dev.matheuslf.desafio.inscritos.dto.TaskCreateDTO;
 import dev.matheuslf.desafio.inscritos.enums.TaskPriority;
 import dev.matheuslf.desafio.inscritos.enums.TaskStatus;
@@ -50,8 +51,14 @@ public class TaskController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long id, @RequestParam TaskStatus status) {
-        Task updatedTask = taskService.updateTaskStatus(id, status);
+    public ResponseEntity<Task> updateTaskStatus(@PathVariable Long id, @RequestBody StatusUpdateDTO statusDTO) {
+        Task updatedTask = taskService.updateTaskStatus(id, statusDTO.getStatus());
         return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
     }
 }
