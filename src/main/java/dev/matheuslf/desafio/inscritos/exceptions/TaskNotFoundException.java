@@ -4,7 +4,7 @@ package dev.matheuslf.desafio.inscritos.exceptions;
 public class TaskNotFoundException extends RuntimeException {
 
     public TaskNotFoundException() {
-        super("ID não encontrado.");
+        super("Recurso não encontrado.");
     }
 
     public TaskNotFoundException(String message) {
