@@ -30,14 +30,11 @@ public class TaskService {
     @Transactional
     public Task createTask(Task task, Long projectId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(ValidationException::new);
+                .orElseThrow(TaskNotFoundException::new);
 
         task.setProject(project);
-        project.getTasks().add(task);
 
-        projectRepository.save(project);
-
-        return task;
+        return taskRepository.save(task);
     }
 
     public Page<Task> findAll(TaskStatus status, TaskPriority priority, Long projectId, Pageable pageable) {
