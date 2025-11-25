@@ -92,4 +92,16 @@ class TaskServiceTest {
         Assertions.assertEquals(newStatus, result.getStatus());
         verify(taskRepository, times(1)).save(existingTask);
     }
+
+    @Test
+    @DisplayName("Teste de atualização de status de tarefa com ID inválido")
+    public void updateTaskStatus_InvalidId_ThrowsNotFoundException() {
+        when(taskRepository.findById(idInvalido)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> {
+            taskService.updateTaskStatus(idInvalido, TaskStatus.DONE);
+        });
+
+        verify(taskRepository, never()).save(any(Task.class));
+    }
 }
