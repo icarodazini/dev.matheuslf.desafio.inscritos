@@ -3,7 +3,6 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.enums.TaskPriority;
 import dev.matheuslf.desafio.inscritos.enums.TaskStatus;
 import dev.matheuslf.desafio.inscritos.exceptions.TaskNotFoundException;
-import dev.matheuslf.desafio.inscritos.exceptions.ValidationException;
 import dev.matheuslf.desafio.inscritos.model.Project;
 import dev.matheuslf.desafio.inscritos.model.Task;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
