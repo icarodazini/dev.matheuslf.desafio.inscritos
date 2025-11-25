@@ -6,6 +6,7 @@ import dev.matheuslf.desafio.inscritos.model.Project;
 import dev.matheuslf.desafio.inscritos.model.Task;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
+import dev.matheuslf.desafio.inscritos.specification.TaskSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -125,5 +131,20 @@ class TaskServiceTest {
         });
 
         verify(taskRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    public void findAll_WithoutFilters_ReturnsPageOfTasks() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Task> expectedPage = new PageImpl<>(List.of(task));
+
+        when(taskRepository.findAll(any(TaskSpecification.class), eq(pageable))).thenReturn(expectedPage);
+
+        Page<Task> result = taskService.findAll(null, null, null, pageable);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1, result.getTotalElements());
+
+        verify(taskRepository, times(1)).findAll(any(TaskSpecification.class), eq(pageable));
     }
 }
