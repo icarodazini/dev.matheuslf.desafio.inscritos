@@ -104,4 +104,14 @@ class TaskServiceTest {
 
         verify(taskRepository, never()).save(any(Task.class));
     }
+
+    @Test
+    @DisplayName("Teste de exclusão de tarefa com ID válido")
+    public void deleteTesk_ValidId_DeleteTaskSuccessfully() {
+        when(taskRepository.existsById(idValido)).thenReturn(true);
+
+        taskService.deleteTask(idValido);
+
+        verify(taskRepository, times(1)).deleteById(idValido);
+    }
 }
