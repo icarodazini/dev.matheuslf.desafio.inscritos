@@ -114,4 +114,16 @@ class TaskServiceTest {
 
         verify(taskRepository, times(1)).deleteById(idValido);
     }
+
+    @Test
+    @DisplayName("Teste de exclusão de tarefa com ID inválido")
+    public void deleteTask_InvalidId_ThrowsNotFoundException() {
+        when(taskRepository.existsById(idInvalido)).thenReturn(false);
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> {
+            taskService.deleteTask(idInvalido);
+        });
+
+        verify(taskRepository, never()).deleteById(anyLong());
+    }
 }
