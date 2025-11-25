@@ -1,5 +1,6 @@
 package dev.matheuslf.desafio.inscritos.service;
 
+import dev.matheuslf.desafio.inscritos.exceptions.TaskNotFoundException;
 import dev.matheuslf.desafio.inscritos.model.Project;
 import dev.matheuslf.desafio.inscritos.model.Task;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
@@ -56,5 +57,18 @@ class TaskServiceTest {
         Assertions.assertNotNull(result);
 
         verify(taskRepository, times(1)).save(task);
+    }
+
+    @Test
+    @DisplayName("Teste de criação de tarefa com ID de projeto inválido")
+    public void createTask_InvalidProjectId_ThrowsNotFoundException() {
+        when(projectRepository.findById(idInvalido)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(TaskNotFoundException.class, () -> {
+
+            taskService.createTask(task, idInvalido);
+        });
+
+        verify(taskRepository, never()).save(any(Task.class));
     }
 }
