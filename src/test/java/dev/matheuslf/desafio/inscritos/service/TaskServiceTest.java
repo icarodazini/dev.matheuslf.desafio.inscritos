@@ -1,5 +1,6 @@
 package dev.matheuslf.desafio.inscritos.service;
 
+import dev.matheuslf.desafio.inscritos.enums.TaskStatus;
 import dev.matheuslf.desafio.inscritos.exceptions.TaskNotFoundException;
 import dev.matheuslf.desafio.inscritos.model.Project;
 import dev.matheuslf.desafio.inscritos.model.Task;
@@ -70,5 +71,25 @@ class TaskServiceTest {
         });
 
         verify(taskRepository, never()).save(any(Task.class));
+    }
+
+    @Test
+    @DisplayName("Teste de atualização de status de tarefa com ID válido")
+    public void updateTaskStatus_ValidId_ReturnUpdateTask() {
+        Task existingTask = new Task();
+        existingTask.setId(idValido);
+        existingTask.setStatus(TaskStatus.TODO);
+
+        when(taskRepository.findById(idValido)).thenReturn(Optional.of(existingTask));
+
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TaskStatus newStatus = TaskStatus.DONE;
+
+        Task result = taskService.updateTaskStatus(idValido, newStatus);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(newStatus, result.getStatus());
+        verify(taskRepository, times(1)).save(existingTask);
     }
 }
