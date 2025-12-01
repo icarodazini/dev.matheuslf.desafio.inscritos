@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,7 +47,21 @@ class ProjectServiceTest {
     }
 
     @Test
-    void findAllProjects() {
+    @DisplayName("Deve retornar todos os projetos encontrados pelo repositório")
+    void findAllProjects_ShouldReturnAllProjects() {
 
+        Project project2 = new Project("Segundo Projeto", null);
+        project2.setId(2L);
+        List<Project> expectedProjects = List.of(project, project2);
+
+        when(projectRepository.findAll()).thenReturn(expectedProjects);
+
+        List<Project> result = projectService.findAllProjects();
+
+        Assertions.assertNotNull(result, "A lista de projetos não deve ser nula.");
+        Assertions.assertEquals(2, result.size(), "A lista deve retornar dois projetos.");
+        Assertions.assertEquals(expectedProjects, result, "Os projetos esperados devem estar na lista.");
+
+        verify(projectRepository, times(1)).findAll();
     }
 }
