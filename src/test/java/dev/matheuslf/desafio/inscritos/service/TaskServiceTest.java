@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,6 +38,9 @@ class TaskServiceTest {
 
     @InjectMocks
     private TaskService taskService;
+
+    @Captor
+    private ArgumentCaptor<TaskSpecification> taskSpecificationCaptor;
 
     private Project project;
     private Task task;
@@ -134,6 +139,7 @@ class TaskServiceTest {
     }
 
     @Test
+    @DisplayName("Teste de busca: Deve retornar tarefas paginadas quando chamado sem filtros")
     public void findAll_WithoutFilters_ReturnsPageOfTasks() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Task> expectedPage = new PageImpl<>(List.of(task));
@@ -146,5 +152,24 @@ class TaskServiceTest {
         Assertions.assertEquals(1, result.getTotalElements());
 
         verify(taskRepository, times(1)).findAll(any(TaskSpecification.class), eq(pageable));
+    }
+
+    @Test
+    @DisplayName("Teste de busca com filtro: verifica se a Specification é construída corretamente")
+    public void findAll_WithStatusFilter_VerifiesSpecificationContent() {
+        TaskStatus statusFilter = TaskStatus.DONE;
+        Pageable pageable = PageRequest.of(0, 10);
+
+        when(taskRepository.findAll(taskSpecificationCaptor.capture(), eq(pageable)))
+                .thenReturn(Page.empty());
+
+        taskService.findAll(statusFilter, null, null, pageable);
+
+        TaskSpecification capturedSpec = taskSpecificationCaptor.getValue();
+
+        Assertions.assertEquals(statusFilter, capturedSpec.getStatusFilter(),
+                "A Specification capturada deve conter o status DONE, garantindo que o Service aplicou o filtro.");
+
+        verify(taskRepository, times(1)).findAll(eq(capturedSpec), eq(pageable));
     }
 }

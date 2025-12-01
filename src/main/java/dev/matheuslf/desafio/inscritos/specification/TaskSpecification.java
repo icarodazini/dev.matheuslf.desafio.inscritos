@@ -17,6 +17,10 @@ public class TaskSpecification implements Specification<Task> {
     private TaskPriority priority;
     private Long projectId;
 
+    public TaskStatus getStatusFilter() {
+        return status;
+    }
+
     public TaskSpecification(TaskStatus status, TaskPriority priority, Long projectId) {
         this.status = status;
         this.priority = priority;
@@ -41,5 +45,17 @@ public class TaskSpecification implements Specification<Task> {
         }
 
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public TaskPriority getPriority() {
+        return priority;
+    }
+
+    public Long getProjectId() {
+        return projectId;
     }
 }
